@@ -2,41 +2,10 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/popup/popup.tsx":
-/*!*****************************!*\
-  !*** ./src/popup/popup.tsx ***!
-  \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react_dom_client__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react-dom/client */ "./node_modules/react-dom/client.js");
-/* harmony import */ var _assets_tailwind_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../assets/tailwind.css */ "./src/assets/tailwind.css");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _toggleswitch__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./toggleswitch */ "./src/popup/toggleswitch.tsx");
-
-
-
-
-function Popup() {
-    return (react__WEBPACK_IMPORTED_MODULE_2___default().createElement("div", { className: "w-full p-4 bg-gray-300 shadow-xl" },
-        react__WEBPACK_IMPORTED_MODULE_2___default().createElement("h1", { className: "text-3xl font-bold mt-4" }, "Assistance Settings"),
-        react__WEBPACK_IMPORTED_MODULE_2___default().createElement("p", { className: "text-xl font-semibold mt-4 text-center" }, "Magnifying Glass"),
-        react__WEBPACK_IMPORTED_MODULE_2___default().createElement("div", { className: "flex flex-row items-center justify-center " },
-            react__WEBPACK_IMPORTED_MODULE_2___default().createElement(_toggleswitch__WEBPACK_IMPORTED_MODULE_3__["default"], null))));
-}
-const container = document.createElement('div');
-document.body.appendChild(container);
-const root = (0,react_dom_client__WEBPACK_IMPORTED_MODULE_0__.createRoot)(container);
-root.render(react__WEBPACK_IMPORTED_MODULE_2___default().createElement(Popup, null));
-
-
-/***/ }),
-
-/***/ "./src/popup/toggleswitch.tsx":
-/*!************************************!*\
-  !*** ./src/popup/toggleswitch.tsx ***!
-  \************************************/
+/***/ "./src/tabs/magnifier.tsx":
+/*!********************************!*\
+  !*** ./src/tabs/magnifier.tsx ***!
+  \********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -46,22 +15,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
-const ToggleSwitch = () => {
-    const [isChecked, setIsChecked] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
-    const handleToggle = () => {
-        setIsChecked(prev => !prev);
-        chrome.runtime.sendMessage({ action: "TOGGLE_MAGNIFIER", data: { isEnabled: !isChecked } });
+const Magnifier = ({ children, isEnabled }) => {
+    const [mousePosition, setMousePosition] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
+    const scale = 1.5;
+    const radius = 100;
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+        // Reset the mouse position when magnifier is disabled
+        if (!isEnabled) {
+            setMousePosition(null);
+        }
+    }, [isEnabled]);
+    const handleMouseMove = (e) => {
+        if (isEnabled) {
+            setMousePosition({
+                x: e.clientX,
+                y: e.clientY,
+            });
+        }
     };
-    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", { className: "relative inline-block w-[60px] h-9" },
-        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { type: "checkbox", className: "opacity-0 w-0 h-0", checked: isChecked, onChange: handleToggle }),
-        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", { className: `absolute cursor-pointer top-0 left-0 right-0 bottom-0 
-                            transition-all duration-400 ease-in-out rounded-full border border-black 
-                            ${isChecked ? 'bg-blue-500' : 'bg-gray-500'}` },
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("span", { className: `absolute transition-transform duration-400 ease-in-out 
-                                transform ${isChecked ? 'translate-x-6' : 'translate-x-0'} 
-                                w-7 h-7 left-1 bottom-1 bg-white rounded-full` }))));
+    const handleMouseLeave = () => {
+        if (isEnabled) {
+            setMousePosition(null);
+        }
+    };
+    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "relative w-full h-full", onMouseMove: isEnabled ? handleMouseMove : undefined, onMouseLeave: isEnabled ? handleMouseLeave : undefined },
+        children,
+        isEnabled && mousePosition && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "absolute inset-0 overflow-hidden pointer-events-none", style: {
+                clipPath: `circle(${radius}px at ${mousePosition.x}px ${mousePosition.y}px)`,
+            } },
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "absolute inset-0", style: {
+                    transform: `scale(${scale})`,
+                    transformOrigin: `${mousePosition.x}px ${mousePosition.y}px`,
+                } }, children)))));
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ToggleSwitch);
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Magnifier);
 
 
 /***/ })
@@ -188,7 +175,7 @@ const ToggleSwitch = () => {
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
-/******/ 			"popup": 0
+/******/ 			"magnifier": 0
 /******/ 		};
 /******/ 		
 /******/ 		// no chunk on demand loading
@@ -233,19 +220,14 @@ const ToggleSwitch = () => {
 /******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	})();
 /******/ 	
-/******/ 	/* webpack/runtime/nonce */
-/******/ 	(() => {
-/******/ 		__webpack_require__.nc = undefined;
-/******/ 	})();
-/******/ 	
 /************************************************************************/
 /******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendors-node_modules_react_index_js","vendors-node_modules_css-loader_dist_runtime_api_js-node_modules_css-loader_dist_runtime_sour-b53f7e","src_assets_tailwind_css"], () => (__webpack_require__("./src/popup/popup.tsx")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendors-node_modules_react_index_js"], () => (__webpack_require__("./src/tabs/magnifier.tsx")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()
 ;
-//# sourceMappingURL=popup.js.map
+//# sourceMappingURL=magnifier.js.map

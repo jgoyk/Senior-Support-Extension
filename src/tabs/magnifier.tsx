@@ -1,7 +1,8 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useEffect } from 'react';
 
 interface MagnifierProps {
   children: ReactNode;
+  isEnabled: boolean;
 }
 
 interface Position {
@@ -9,46 +10,54 @@ interface Position {
   y: number;
 }
 
-const Magnifier: React.FC<MagnifierProps> = ({ children }) => {
+const Magnifier: React.FC<MagnifierProps> = ({ children, isEnabled }) => {
   const [mousePosition, setMousePosition] = useState<Position | null>(null);
   const scale = 1.5;
   const radius = 100;
-  
+
+  useEffect(() => {
+    // Reset the mouse position when magnifier is disabled
+    if (!isEnabled) {
+      setMousePosition(null);
+    }
+  }, [isEnabled]);
+
   const handleMouseMove = (e: React.MouseEvent) => {
-    setMousePosition({
-      x: e.clientX,
-      y: e.clientY,
-    });
+    if (isEnabled) {
+      setMousePosition({
+        x: e.clientX,
+        y: e.clientY,
+      });
+    }
   };
 
   const handleMouseLeave = () => {
-    setMousePosition(null);
+    if (isEnabled) {
+      setMousePosition(null);
+    }
   };
-
-  const adjustedX = mousePosition ? mousePosition.x - mousePosition.x * scale : 0;
-    const adjustedY = mousePosition ? mousePosition.y - mousePosition.y * scale : 0;
-
 
   return (
     <div
-      className="relative w-full"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      className="relative w-full h-full"
+      onMouseMove={isEnabled ? handleMouseMove : undefined}
+      onMouseLeave={isEnabled ? handleMouseLeave : undefined}
     >
       {children}
-      {mousePosition && (
+      {isEnabled && mousePosition && (
         <div
           className="absolute inset-0 overflow-hidden pointer-events-none"
           style={{
             clipPath: `circle(${radius}px at ${mousePosition.x}px ${mousePosition.y}px)`,
           }}
         >
-          <div className="absolute inset-0" style={{
-            transform: `scale(${scale})`,
-            transformOrigin: `${mousePosition.x}px ${mousePosition.y}px`,
-            left: `${adjustedX}px`,
-            top: `${adjustedY}px`,
-          }}>
+          <div
+            className="absolute inset-0"
+            style={{
+              transform: `scale(${scale})`,
+              transformOrigin: `${mousePosition.x}px ${mousePosition.y}px`,
+            }}
+          >
             {children}
           </div>
         </div>

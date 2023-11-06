@@ -13,7 +13,8 @@ module.exports = {
         options: path.resolve('./src/options/options.tsx'),
         background: path.resolve('./src/background/background.ts'),
         contentScript: path.resolve('./src/contentScript/contentScript.ts'),
-        newTab: path.resolve('./src/tabs/index.tsx')
+        newTab: path.resolve('./src/tabs/index.tsx'),
+        magnifier: path.resolve('./src/tabs/magnifier.tsx')
     },
     module: {
         rules: [

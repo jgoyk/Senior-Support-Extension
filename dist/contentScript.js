@@ -3,21 +3,22 @@ var __webpack_exports__ = {};
 /*!********************************************!*\
   !*** ./src/contentScript/contentScript.ts ***!
   \********************************************/
-const toggleSwitch = document.querySelector<HTMLInputElement>('input[type="checkbox"]');
-if (toggleSwitch) {
-    toggleSwitch.addEventListener('change', function() {
-        chrome.runtime.sendMessage({toggleState: toggleSwitch.checked});
-    });
-}
+let script = document.createElement('script');
+script.src = chrome.runtime.getURL('magnifier.js');
+(document.head || document.documentElement).appendChild(script);
 
-chrome.runtime.sendMessage({toggleState: toggleSwitch.checked}, function(response) {
-    if(chrome.runtime.lastError){
-      console.error(chrome.runtime.lastError);
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.action === "TOGGLE_MAGNIFIER") {
+    if (request.data.isEnabled) {
+      let event = new Event('activateMagnifier');
+      document.dispatchEvent(event);
+    } else {
+      let event = new Event('deactivateMagnifier');
+      document.dispatchEvent(event);
     }
-    else{
-      console.log("Message sent successfully: ", response);
-    }
-  });
+  }
+});
+
 
 /******/ })()
 ;

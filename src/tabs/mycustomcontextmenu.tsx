@@ -57,10 +57,10 @@ const MyCustomContextMenu = ({ targetId, options, className1 }) => {
   return (
     <div
       ref={contextRef}
-      className='flex flex-col justify-center align-center absolute h-auto w-fit'
+      className='flex flex-col justify-center align-center absolute h-auto w-fit min-w-[150px] z-40'
       style={{ display: contextData.visible ? 'block' : 'none', left: contextData.posX, top: contextData.posY }}
     >
-      <div className={`rounded-md bg-gray-400 ${className1}`}>
+      <div className={` bg-gray-500 rounded-sm p-1 ${className1}`}>
       {options.map((option) => (
         <div key={option.label} className="p-2 bg-gray-400 hover:bg-gray-600">
           <li className={` ${className1}`} onClick={() => {

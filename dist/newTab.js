@@ -45,31 +45,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
-const Magnifier = ({ children }) => {
+const Magnifier = ({ children, isEnabled }) => {
     const [mousePosition, setMousePosition] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null);
     const scale = 1.5;
     const radius = 100;
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+        // Reset the mouse position when magnifier is disabled
+        if (!isEnabled) {
+            setMousePosition(null);
+        }
+    }, [isEnabled]);
     const handleMouseMove = (e) => {
-        setMousePosition({
-            x: e.clientX,
-            y: e.clientY,
-        });
+        if (isEnabled) {
+            setMousePosition({
+                x: e.clientX,
+                y: e.clientY,
+            });
+        }
     };
     const handleMouseLeave = () => {
-        setMousePosition(null);
+        if (isEnabled) {
+            setMousePosition(null);
+        }
     };
-    const adjustedX = mousePosition ? mousePosition.x - mousePosition.x * scale : 0;
-    const adjustedY = mousePosition ? mousePosition.y - mousePosition.y * scale : 0;
-    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "relative w-full", onMouseMove: handleMouseMove, onMouseLeave: handleMouseLeave },
+    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "relative w-full h-full", onMouseMove: isEnabled ? handleMouseMove : undefined, onMouseLeave: isEnabled ? handleMouseLeave : undefined },
         children,
-        mousePosition && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "absolute inset-0 overflow-hidden pointer-events-none", style: {
+        isEnabled && mousePosition && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "absolute inset-0 overflow-hidden pointer-events-none", style: {
                 clipPath: `circle(${radius}px at ${mousePosition.x}px ${mousePosition.y}px)`,
             } },
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "absolute inset-0", style: {
                     transform: `scale(${scale})`,
                     transformOrigin: `${mousePosition.x}px ${mousePosition.y}px`,
-                    left: `${adjustedX}px`,
-                    top: `${adjustedY}px`,
                 } }, children)))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Magnifier);
@@ -182,29 +188,31 @@ const Menu = () => {
     };
     const handleColorChange = e => {
         setColor(e.target.value);
-        console.log(e.target.value);
     };
-    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", null,
+    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "customContextmenuArea2", className: "" },
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { style: { backgroundColor: color } },
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mycustomcontextmenu__WEBPACK_IMPORTED_MODULE_2__["default"], { targetId: "customContextmenuArea1", options: [
                     { label: "Edit", onClick: () => handleEditorClick(clickedKey) },
                     { label: "Delete", onClick: () => handleDeleteClick(clickedKey) },
                     { label: "Open in new tab", onClick: () => handleNewTabClick(clickedKey) },
+                ], className1: "cursor-pointer " }),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_mycustomcontextmenu__WEBPACK_IMPORTED_MODULE_2__["default"], { targetId: 'customContextmenuArea2', options: [
+                    { label: 'Add new bookmark', onClick: handleMenuClick },
+                    { label: 'Settings', onClick: handleSettingsClick },
                 ], className1: "cursor-pointer" }),
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "absolute top-5 right-5 flex bg-gray-300 rounded-full p-3 w-fit justify-end" },
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_icons_hi__WEBPACK_IMPORTED_MODULE_4__.HiMenu, { size: 20, onClick: handleSettingsClick })),
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "grid grid-cols-4 grid-rows-2 gap-4 items-center justify-center h-screen w-full" },
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "contents", id: "customContextmenuArea1" }, submittedData.map((data, index) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { key: index, className: "flex justify-center items-center h-full w-full" },
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: " bg-white rounded-lg w-1/2 h-1/2" },
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", { id: `${index}`, href: `https://${data.myURL}`, className: "block h-full relative" },
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "text-[1vw] font-semibold text-center absolute top-0 left-0 w-full flex justify-center pt-3", id: `${index}` }, data.myTitle),
-                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: `${index}`, className: "flex justify-center items-center h-full pt-8" },
-                                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", { draggable: "false", src: data.myImage, className: "p-5 h-auto max-h-full", id: `${index}` })))))))),
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "grid grid-cols-4 grid-rows-2 gap-4 items-center justify-center h-screen w-full z-30" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "contents", id: "customContextmenuArea1" }, submittedData.map((data, index) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { key: index, className: "flex justify-center items-center h-full w-full pointer-events-none shrink" },
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: " bg-white rounded-lg max-h-[50%] max-w-[50%] h-1/2 w-1/2 min-h-[50%] min-w-[50%] pointer-events-auto shrink" },
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("a", { id: `${index}`, href: `https://${data.myURL}`, className: "flex flex-col min-h-full max-h-full h-full" },
+                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "text-[1vw] font-semibold text-center p-3 h-fit", id: `${index}` }, data.myTitle),
+                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("img", { id: `${index}`, draggable: "false", src: data.myImage, className: " pb-8 pt-4 px-4 max-h-full max-w-full min-h-[50%] min-w-[50%] object-contain" }))))))),
                 submittedData.length + selectedOptions.length < 8 ? (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: `flex justify-center ${submittedData.length + selectedOptions.length < 1
                         ? "col-start-1 col-span-4 row-start-1 row-span-2"
                         : ""}` },
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_icons_hi2__WEBPACK_IMPORTED_MODULE_5__.HiPlusCircle, { size: 70, color: "dimgray", onClick: handleMenuClick }))) : null),
-            isEditorOpen && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center" },
+            isEditorOpen && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-[55]" },
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "bg-gray-200 p-4 rounded-lg shadow-md" },
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "align-middle flex" },
                         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: " align-middle", onClick: defaultHandleEditorClick },
@@ -221,20 +229,19 @@ const Menu = () => {
                         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex justify-end mt-2" },
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", { className: "text-md font-semibold border border-black p-1 rounded-md mr-2", onClick: defaultHandleEditorClick }, "Cancel"),
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", { className: "text-md font-semibold border border-black p-1 rounded-md", type: "submit" }, "Save")))))),
-            isSettingsOpen && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center" },
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "bg-gray-200 p-4 rounded-lg shadow-md" },
+            isSettingsOpen && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "fixed top-0 left-0 w-full h-full flex justify-center items-center" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "bg-gray-200 p-4 rounded-lg shadow-md z-[56]" },
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "align-middle flex" },
                         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: " align-middle", onClick: handleSettingsClick },
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_icons_hi2__WEBPACK_IMPORTED_MODULE_5__.HiXMark, { size: 20, color: "black" })),
                         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex items-center align-middle" },
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex-grow text-center text-xl font-bold select-none" }, "Add a Shortcut"))),
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex flex-col justify-start mx-2 mt-1 border border-slate-500 w-fit p-3 " },
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex bg-gray justify-start" }, "Fart"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "bg-gray justify-start" }, "Fart")),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex bg-gray justify-start" }, "Change Background")),
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", null,
                         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { value: color, onChange: (e) => handleColorChange(e), type: "color" }))))),
             isMenuOpen && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center" },
-                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "bg-gray-200 p-4 rounded-lg shadow-md" },
+                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "bg-gray-200 p-4 rounded-lg shadow-md z-[57]" },
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "-mb-7 absolute", onClick: handleMenuClick },
                         react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_icons_hi2__WEBPACK_IMPORTED_MODULE_5__.HiXMark, { size: 20, color: "black" })),
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex items-center mb-1 -mt-1" },
@@ -319,8 +326,8 @@ const MyCustomContextMenu = ({ targetId, options, className1 }) => {
             return newData;
         });
     }, []);
-    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { ref: contextRef, className: 'flex flex-col justify-center align-center absolute h-auto w-fit', style: { display: contextData.visible ? 'block' : 'none', left: contextData.posX, top: contextData.posY } },
-        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: `rounded-md bg-gray-400 ${className1}` }, options.map((option) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { key: option.label, className: "p-2 bg-gray-400 hover:bg-gray-600" },
+    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { ref: contextRef, className: 'flex flex-col justify-center align-center absolute h-auto w-fit min-w-[150px] z-40', style: { display: contextData.visible ? 'block' : 'none', left: contextData.posX, top: contextData.posY } },
+        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: ` bg-gray-500 rounded-sm p-1 ${className1}` }, options.map((option) => (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { key: option.label, className: "p-2 bg-gray-400 hover:bg-gray-600" },
             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("li", { className: ` ${className1}`, onClick: () => {
                     option.onClick();
                 } }, option.label)))))));
@@ -376,18 +383,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function Tabs() {
-    const handleViewClick = () => {
-        console.log('View clicked');
-    };
-    const handleUpdateClick = () => {
-        console.log('Update clicked');
-    };
-    const handleDeleteClick = () => {
-        console.log('Delete clicked');
-    };
-    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_magnifier__WEBPACK_IMPORTED_MODULE_3__["default"], null,
+    const [isMagnifierEnabled, setIsMagnifierEnabled] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false);
+    (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+        const handleMessage = (request, sender, sendResponse) => {
+            if (request.action === "TOGGLE_MAGNIFIER") {
+                setIsMagnifierEnabled(request.data.isEnabled);
+            }
+        };
+        chrome.runtime.onMessage.addListener(handleMessage);
+        return () => {
+            chrome.runtime.onMessage.removeListener(handleMessage);
+        };
+    }, []);
+    return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_magnifier__WEBPACK_IMPORTED_MODULE_3__["default"], { isEnabled: isMagnifierEnabled },
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "h-screen w-screen bg-gray-700 flex" },
-            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "customContextmenuArea2", className: "flex-1 overflow-hidden m-8" },
+            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "customContextmenuArea2", className: "flex-1 overflow-hidden" },
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_menu__WEBPACK_IMPORTED_MODULE_1__["default"], null)))));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Tabs);
@@ -572,7 +582,7 @@ function Tabs() {
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
-/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendors-node_modules_css-loader_dist_runtime_api_js-node_modules_css-loader_dist_runtime_sour-b53f7e","vendors-node_modules_react-icons_hi2_index_esm_js-node_modules_react-icons_hi_index_esm_js","src_assets_tailwind_css"], () => (__webpack_require__("./src/tabs/index.tsx")))
+/******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["vendors-node_modules_react_index_js","vendors-node_modules_css-loader_dist_runtime_api_js-node_modules_css-loader_dist_runtime_sour-b53f7e","vendors-node_modules_react-icons_hi2_index_esm_js-node_modules_react-icons_hi_index_esm_js","src_assets_tailwind_css"], () => (__webpack_require__("./src/tabs/index.tsx")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	
 /******/ })()

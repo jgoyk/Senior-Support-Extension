@@ -4,8 +4,8 @@ const ToggleSwitch: React.FC = () => {
     const [isChecked, setIsChecked] = useState(false);
     const handleToggle = () => {
         setIsChecked(prev => !prev);
-        chrome.runtime.sendMessage({toggleState: !isChecked});
-      }
+        chrome.runtime.sendMessage({ action: "TOGGLE_MAGNIFIER", data: { isEnabled: !isChecked } });
+    };
     return (
         <label className="relative inline-block w-[60px] h-9">
             <input 
@@ -16,8 +16,8 @@ const ToggleSwitch: React.FC = () => {
             />
             <span 
                 className={`absolute cursor-pointer top-0 left-0 right-0 bottom-0 
-                            transition-all duration-400 ease-in-out rounded-full 
-                            ${isChecked ? 'bg-blue-500' : 'bg-gray-300'}`}
+                            transition-all duration-400 ease-in-out rounded-full border border-black 
+                            ${isChecked ? 'bg-blue-500' : 'bg-gray-500'}`}
             >
                 <span 
                     className={`absolute transition-transform duration-400 ease-in-out 

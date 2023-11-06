@@ -107,11 +107,10 @@ const Menu = () => {
 
   const handleColorChange = e => {
     setColor(e.target.value)
-    console.log(e.target.value)
   }
 
   return (
-    <div>
+    <div id="customContextmenuArea2" className="">
       <div style={{ backgroundColor: color }}>
         <MyCustomContextMenu
           targetId="customContextmenuArea1"
@@ -120,29 +119,35 @@ const Menu = () => {
             { label: "Delete", onClick: () => handleDeleteClick(clickedKey) },
             { label: "Open in new tab", onClick: () => handleNewTabClick(clickedKey) },
           ]}
+          className1="cursor-pointer "
+        />
+        <MyCustomContextMenu
+          targetId='customContextmenuArea2'
+          options={[
+            { label: 'Add new bookmark', onClick: handleMenuClick },
+            { label: 'Settings', onClick: handleSettingsClick },
+          ]}
           className1="cursor-pointer"
         />
         <div className="absolute top-5 right-5 flex bg-gray-300 rounded-full p-3 w-fit justify-end">
           <HiMenu size={20} onClick={handleSettingsClick} />
         </div>
 
-        <div className="grid grid-cols-4 grid-rows-2 gap-4 items-center justify-center h-screen w-full">
+        <div className="grid grid-cols-4 grid-rows-2 gap-4 items-center justify-center h-screen w-full z-30">
           <div className="contents" id="customContextmenuArea1">
             {submittedData.map((data, index) => (
-              <div key={index} className="flex justify-center items-center h-full w-full">
-                <div className=" bg-white rounded-lg w-1/2 h-1/2">
-                  <a id={`${index}`} href={`https://${data.myURL}`} className="block h-full relative">
-                    <div className="text-[1vw] font-semibold text-center absolute top-0 left-0 w-full flex justify-center pt-3"  id={`${index}`}>
+              <div key={index} className="flex justify-center items-center h-full w-full pointer-events-none shrink">
+                <div className=" bg-white rounded-lg max-h-[50%] max-w-[50%] h-1/2 w-1/2 min-h-[50%] min-w-[50%] pointer-events-auto shrink">
+                  <a id={`${index}`} href={`https://${data.myURL}`} className="flex flex-col min-h-full max-h-full h-full">
+                    <div className="text-[1vw] font-semibold text-center p-3 h-fit"  id={`${index}`}>
                       {data.myTitle}
                     </div>
-                    <div id={`${index}`} className="flex justify-center items-center h-full pt-8">
-                      <img
-                        draggable="false"
-                        src={data.myImage}
-                        className="p-5 h-auto max-h-full"
-                        id={`${index}`}
-                      />
-                    </div>
+                    <img
+                      id={`${index}`}
+                      draggable="false"
+                      src={data.myImage}
+                      className=" pb-8 pt-4 px-4 max-h-full max-w-full min-h-[50%] min-w-[50%] object-contain"
+                    />
                   </a>
                 </div>
               </div>
@@ -162,7 +167,7 @@ const Menu = () => {
         </div>
 
         {isEditorOpen && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-[55]">
             <div className="bg-gray-200 p-4 rounded-lg shadow-md">
               <div className="align-middle flex">
                 <div className=" align-middle" onClick={defaultHandleEditorClick}>
@@ -220,8 +225,8 @@ const Menu = () => {
         )}
 
         {isSettingsOpen && (
-          <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-gray-200 p-4 rounded-lg shadow-md">
+          <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center">
+            <div className="bg-gray-200 p-4 rounded-lg shadow-md z-[56]">
               <div className="align-middle flex">
                 <div className=" align-middle" onClick={handleSettingsClick}>
                   <HiXMark size={20} color="black" />
@@ -233,8 +238,7 @@ const Menu = () => {
                 </div>
               </div>
               <div className="flex flex-col justify-start mx-2 mt-1 border border-slate-500 w-fit p-3 ">
-                <div className="flex bg-gray justify-start">Fart</div>
-                <div className="bg-gray justify-start">Fart</div>
+                <div className="flex bg-gray justify-start">Change Background</div>
               </div>
               <label>
                 <input
@@ -249,7 +253,7 @@ const Menu = () => {
 
         {isMenuOpen && (
           <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-gray-200 p-4 rounded-lg shadow-md">
+            <div className="bg-gray-200 p-4 rounded-lg shadow-md z-[57]">
               <div className="-mb-7 absolute" onClick={handleMenuClick}>
                 <HiXMark size={20} color="black" />
               </div>

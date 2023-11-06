@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Menu from './menu';
 import '../assets/tailwind.css';
 import MyCustomContextMenu from './mycustomcontextmenu';
@@ -6,31 +6,25 @@ import Magnifier from './magnifier';
 
 
 function Tabs() {
+  const [isMagnifierEnabled, setIsMagnifierEnabled] = useState(false);
 
-  const handleViewClick = () => {
-    console.log('View clicked');
-  };
+  useEffect(() => {
+    const handleMessage = (request, sender, sendResponse) => {
+      if (request.action === "TOGGLE_MAGNIFIER") {
+        setIsMagnifierEnabled(request.data.isEnabled);
+      }
+    };
+    chrome.runtime.onMessage.addListener(handleMessage);
 
-  const handleUpdateClick = () => {
-    console.log('Update clicked');
-  };
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleMessage);
+    };
+  }, []);
 
-  const handleDeleteClick = () => {
-    console.log('Delete clicked');
-  };
   return (
-    <Magnifier>
+    <Magnifier isEnabled={isMagnifierEnabled}>
       <div className="h-screen w-screen bg-gray-700 flex">
-        {/* <MyCustomContextMenu
-          targetId='customContextmenuArea2'
-          options={[
-            { label: 'View', onClick: handleViewClick },
-            { label: 'Update', onClick: handleUpdateClick },
-            { label: 'Fart', onClick: handleDeleteClick },
-          ]}
-          className1="cursor-pointer"
-        /> */}
-          <div id="customContextmenuArea2" className="flex-1 overflow-hidden m-8">
+          <div id="customContextmenuArea2" className="flex-1 overflow-hidden">
             <Menu />
           </div>
       </div>
