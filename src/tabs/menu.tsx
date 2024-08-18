@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HiPlusCircle, HiXMark } from "react-icons/hi2";
 import { HiMenu } from "react-icons/hi";
 import "../assets/tailwind.css";
-import MyCustomContextMenu from "./mycustomcontextmenu";
+
 import OptionTile from "./popweb";
 
 
@@ -81,19 +81,6 @@ const Menu = () => {
     handleMenuClick();
   };
 
-  document.addEventListener("contextmenu", (event) => {
-    event.preventDefault();
-    const clickedDiv = event.target as HTMLDivElement;
-    const key = clickedDiv.getAttribute("id");
-
-    if (key !== null) {
-      const index = parseInt(key);
-      setClickedKey(index);
-    }
-    const xPos = event.pageX + "px";
-    const yPos = event.pageY + "px";
-  });
-
   const handleNewTabClick = (index) => {
     const updatedData = submittedData[index].myURL;
     window.open(`https://${updatedData}`, "_blank");
@@ -103,6 +90,7 @@ const Menu = () => {
     const updatedData = submittedData.filter((_, i) => i !== index);
     setSubmittedData(updatedData);
     localStorage.setItem("submittedData", JSON.stringify(updatedData));
+    console.log("deleted")
   };
 
   const handleColorChange = e => {
@@ -110,44 +98,31 @@ const Menu = () => {
   }
 
   return (
-    <div id="customContextmenuArea2" className="">
+    <div id="" className="">
       <div style={{ backgroundColor: color }}>
-        <MyCustomContextMenu
-          targetId="customContextmenuArea1"
-          options={[
-            { label: "Edit", onClick: () => handleEditorClick(clickedKey) },
-            { label: "Delete", onClick: () => handleDeleteClick(clickedKey) },
-            { label: "Open in new tab", onClick: () => handleNewTabClick(clickedKey) },
-          ]}
-          className1="cursor-pointer "
-        />
-        <MyCustomContextMenu
-          targetId='customContextmenuArea2'
-          options={[
-            { label: 'Add new bookmark', onClick: handleMenuClick },
-            { label: 'Settings', onClick: handleSettingsClick },
-          ]}
-          className1="cursor-pointer"
-        />
         <div className="absolute top-5 right-5 flex bg-gray-300 rounded-full p-3 w-fit justify-end">
           <HiMenu size={20} onClick={handleSettingsClick} />
         </div>
 
         <div className="grid grid-cols-4 grid-rows-2 gap-4 items-center justify-center h-screen w-full z-30">
-          <div className="contents" id="customContextmenuArea1">
+          <div className="contents" id="">
             {submittedData.map((data, index) => (
-              <div key={index} className="flex justify-center items-center h-full w-full pointer-events-none shrink">
-                <div className=" bg-white rounded-lg max-h-[50%] max-w-[50%] h-1/2 w-1/2 min-h-[50%] min-w-[50%] pointer-events-auto shrink">
-                  <a id={`${index}`} href={`https://${data.myURL}`} className="flex flex-col min-h-full max-h-full h-full">
-                    <div className="text-[1vw] font-semibold text-center p-3 h-fit"  id={`${index}`}>
+              <div key={index} className="flex justify-center items-center h-full w-full pointer-events-none shrink ">
+                
+                <div className=" bg-white rounded-lg max-h-[50%] max-w-[50%] h-1/2 w-1/2 min-h-[50%] min-w-[50%] pointer-events-auto shrink relative flex">
+                  <HiXMark className="top-0 left-0 m-2 h-6 w-6 absolute hover:scale-110 hover:fill-red-600" onClick={()=> handleDeleteClick(index)}/>
+                  <a id={`${index}`} href={`https://${data.myURL}`} className="flex flex-col h-full w-full">
+                    <div className="text-[1vw] font-semibold text-center px-3 pt-2 h-fit"  id={`${index}`}>
                       {data.myTitle}
                     </div>
-                    <img
-                      id={`${index}`}
-                      draggable="false"
-                      src={data.myImage}
-                      className=" pb-8 pt-4 px-4 max-h-full max-w-full min-h-[50%] min-w-[50%] object-contain"
-                    />
+                    <div className="object-contain h-full w-full  flex flex-col items-center justify-center px-8">
+                      <img
+                        id={`${index}`}
+                        draggable="false"
+                        src={data.myImage}
+                        className="max-h-full max-w-full overflow-none px-6"
+                      />
+                    </div>
                   </a>
                 </div>
               </div>
@@ -161,7 +136,7 @@ const Menu = () => {
                   : ""
               }`}
             >
-              <HiPlusCircle size={70} color="dimgray" onClick={handleMenuClick} />
+              <HiPlusCircle size={70} color="dimgray" className="shadow-lg rounded-full border-2 border-gray-500 hover:scale-110 fill-gray-300" onClick={handleMenuClick} />
             </div>
           ) : null}
         </div>
@@ -226,27 +201,22 @@ const Menu = () => {
 
         {isSettingsOpen && (
           <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center">
-            <div className="bg-gray-200 p-4 rounded-lg shadow-md z-[56]">
-              <div className="align-middle flex">
-                <div className=" align-middle" onClick={handleSettingsClick}>
-                  <HiXMark size={20} color="black" />
-                </div>
-                <div className="flex items-center align-middle">
-                  <div className="flex-grow text-center text-xl font-bold select-none">
-                    Add a Shortcut
-                  </div>
+            <div className="bg-gray-200 p-4 rounded-lg shadow-md z-[56] h-[50%] w-[50%]">
+              <div className="align-middle flex relative">
+                <HiXMark size={20} color="black" className="hover:scale-110 hover:fill-red-600 pt-2 absolute top-0 left-0" onClick={handleSettingsClick}/>
+                <div className="w-full font-bold items-center align-middle select-none text-xl text-center">
+                  Add a Shortcut
                 </div>
               </div>
-              <div className="flex flex-col justify-start mx-2 mt-1 border border-slate-500 w-fit p-3 ">
-                <div className="flex bg-gray justify-start">Change Background</div>
-              </div>
-              <label>
+              <div className="flex flex-row justify-around mx-2 mt-1 border border-slate-500 w-fit p-3 gap-4">
+                <label className="flex flex-col justify-center text-center bg-gray">Change Background</label>
                 <input
                   value={color}
                   onChange={(e) => handleColorChange(e)}
                   type="color"
+                  className="h-8 w-8"
                 />
-              </label>
+              </div>
             </div>
           </div>
         )}
@@ -298,7 +268,7 @@ const Menu = () => {
                     <OptionTile
                       title="Google"
                       url="www.google.com"
-                      imageUrl="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png"
+                      imageUrl="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/120px-Google_%22G%22_logo.svg.png?20230822192911"
                       selectedOptions={selectedOptions}
                       handleOptionClick={handleOptionClick}
                     />
@@ -341,13 +311,13 @@ const Menu = () => {
 
                   <div className="flex justify-end mt-2">
                     <button
-                      className="text-md font-semibold border border-black p-1 rounded-md mr-2"
+                      className="text-md font-semibold border border-black p-1 rounded-md mr-2 bg-red-600 bg-opacity-50 hover:bg-red-800 hover:text-white"
                       onClick={handleMenuClick}
                     >
                       Cancel
                     </button>
                     <button
-                      className="text-md font-semibold border border-black p-1 rounded-md"
+                      className="text-md font-semibold border border-black p-1 rounded-md bg-green-600 bg-opacity-50 hover:bg-green-800 hover:text-white"
                       type="submit"
                     >
                       Save

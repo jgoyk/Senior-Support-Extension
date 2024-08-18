@@ -7,12 +7,15 @@ function OptionTile({ title, url, imageUrl, selectedOptions, handleOptionClick }
     <div
       className={`${
         isSelected
-          ? "border-2 border-blue-600 bg-gray-300 p-2 m-2 w-50 flex items-center justify-center rounded-md cursor-pointer flex-col"
-          : "bg-white p-2 m-2 border border-black w-50 flex items-center justify-center rounded-md cursor-pointer flex-col"
+          ? "border-2 text-lg border-blue-600 bg-gray-300 p-4 m-4 w-50 flex flex-col justify-around items-center  rounded-md cursor-pointer relative"
+          : "bg-white text-lg p-4 m-4 border-2 border-opacity-50 border-black w-50 flex flex-col justify-around items-center  rounded-md cursor-pointer hover:bg-gray-300 relative"
       }`}
       onClick={() => handleOptionClick(title, url, imageUrl)}
     >
-      <div className="p-2 font-semibold select-none">{title}</div>
+      
+      
+      
+      <div className="px-2 font-semibold select-none p-1">{title}</div>
       <img src={imageUrl} draggable="false" height="50" width="50" alt={title} />
     </div>
   );
