@@ -17,8 +17,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function Popup() {
-    return (react__WEBPACK_IMPORTED_MODULE_2___default().createElement("div", { className: "w-full p-4 bg-gray-300 shadow-xl" },
-        react__WEBPACK_IMPORTED_MODULE_2___default().createElement("h1", { className: "text-3xl font-bold mt-4" }, "Assistance Settings")));
+    return (react__WEBPACK_IMPORTED_MODULE_2___default().createElement("div", { className: "h-[500x] w-[250px] min-h-[500px] min-w-[250px] relative" },
+        react__WEBPACK_IMPORTED_MODULE_2___default().createElement("div", { className: 'p-4 bg-gray-300 shadow-xl min-h-screen w-full relative flex flex-col' },
+            react__WEBPACK_IMPORTED_MODULE_2___default().createElement("h1", { className: "text-3xl font-bold mt-4 text-center" }, "Assistance Settings"),
+            react__WEBPACK_IMPORTED_MODULE_2___default().createElement("hr", { className: 'h-[1.5px] my-4 bg-gray-600 border-0 ' }),
+            react__WEBPACK_IMPORTED_MODULE_2___default().createElement("div", { className: "text-center p-4 text-xl h-full w-full font-semibold bg-gray-400 grow shadow-inner" }, "Coming Soon..."))));
 }
 const container = document.createElement('div');
 document.body.appendChild(container);

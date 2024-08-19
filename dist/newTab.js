@@ -62,7 +62,7 @@ const Menu = () => {
     const [selectedOptions, setSelectedOptions] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
     const [customTitle, setCustomTitle] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("");
     const [customURL, setCustomURL] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("");
-    const [color, setColor] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)("#374151");
+    const [color, setColor] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(JSON.parse(localStorage.getItem("color")) || "#374151");
     (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
         const storedData = JSON.parse(localStorage.getItem("submittedData")) || [];
         setSubmittedData(storedData);
@@ -113,6 +113,26 @@ const Menu = () => {
         setSelectedOptions([]);
         handleMenuClick();
     };
+    const handleSingleSubmit = (e) => {
+        e.preventDefault();
+        if (submittedData.length == 8) {
+            alert("Maximum number of elements reached!");
+            return;
+        }
+        const newData = [...selectedOptions, ...submittedData];
+        if (customTitle && customURL) {
+            newData.push({ myTitle: customTitle, myURL: customURL });
+            setSubmittedData(newData);
+            localStorage.setItem("submittedData", JSON.stringify(newData));
+            setCustomTitle("");
+            setCustomURL("");
+            setSelectedOptions([]);
+            alert("New Shortcut Added!");
+        }
+        else {
+            alert("Please fill in title and url fields!");
+        }
+    };
     const handleNewTabClick = (index) => {
         const updatedData = submittedData[index].myURL;
         window.open(`https://${updatedData}`, "_blank");
@@ -125,6 +145,7 @@ const Menu = () => {
     };
     const handleColorChange = e => {
         setColor(e.target.value);
+        localStorage.setItem("color", JSON.stringify(color));
     };
     return (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { id: "", className: "" },
         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { style: { backgroundColor: color } },
@@ -161,12 +182,13 @@ const Menu = () => {
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", { className: "text-md font-semibold border border-black p-1 rounded-md", type: "submit" }, "Save")))))),
             isSettingsOpen && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "fixed top-0 left-0 w-full h-full flex justify-center items-center" },
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "bg-gray-200 p-4 rounded-lg shadow-md z-[56] h-[50%] w-[50%]" },
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "align-middle flex relative" },
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_icons_hi2__WEBPACK_IMPORTED_MODULE_4__.HiXMark, { size: 20, color: "black", className: "hover:scale-110 hover:fill-red-600 pt-2 absolute top-0 left-0", onClick: handleSettingsClick }),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "w-full font-bold items-center align-middle select-none text-xl text-center" }, "Add a Shortcut")),
-                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex flex-row justify-around mx-2 mt-1 border border-slate-500 w-fit p-3 gap-4" },
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", { className: "flex flex-col justify-center text-center bg-gray" }, "Change Background"),
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { value: color, onChange: (e) => handleColorChange(e), type: "color", className: "h-8 w-8" }))))),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "align-middle flex flex-row justify-center relative pb-2 border-b-2 border-black border-opacity-50 border-dashed" },
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement(react_icons_hi2__WEBPACK_IMPORTED_MODULE_4__.HiXMark, { size: 20, color: "black", className: "hover:scale-110 hover:fill-red-600 h-8 w-8 mt-2 absolute top-0 left-0", onClick: handleSettingsClick }),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "w-full font-bold items-center align-middle select-none text-xl text-center mt-2" }, "Add a Shortcut")),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("br", { className: "" }),
+                    react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex flex-row justify-center mx-2 mt-1 border-slate-500 p-3 gap-4 w-full" },
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("label", { className: "flex flex-col justify-center text-center bg-gray text-lg font-semibold" }, "Click to Change Background: "),
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { value: color, onChange: (e) => handleColorChange(e), type: "color", className: "h-8 w-8 border-2 border-black border-opacity-50 rounded-md shadow-md" }))))),
             isMenuOpen && (react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center" },
                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "bg-gray-200 p-4 rounded-lg shadow-md z-[57]" },
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "-mb-7 absolute", onClick: handleMenuClick },
@@ -174,13 +196,16 @@ const Menu = () => {
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex items-center mb-1 -mt-1" },
                         react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex-grow text-center text-xl font-bold select-none" }, "Add a Shortcut")),
                     react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "mx-2 mt-1" },
-                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", { method: "post", onSubmit: handleMultiSubmit },
+                        react__WEBPACK_IMPORTED_MODULE_0___default().createElement("form", { method: "post", onSubmit: (e) => handleSingleSubmit(e) },
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "grid grid-cols-2 gap-4 mb-1" },
                                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", { className: "text-lg font-semibold select-none" }, "Title:"),
                                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", { className: "text-lg font-semibold select-none" }, "URL:")),
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "grid grid-cols-2 gap-4" },
-                                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { name: "myTitle", placeholder: "Example", className: "mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400", value: customTitle, onChange: (e) => setCustomTitle(e.target.value) }),
-                                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { name: "myURL", type: "url", placeholder: "www.example.com", spellCheck: "false", className: "invalid:border-pink-500 invalid:text-pink-600 mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400", value: customURL, onChange: (e) => setCustomURL(e.target.value) })),
+                                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { name: "myTitle", placeholder: "Example", className: "mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400", value: customTitle, required: true, onChange: (e) => setCustomTitle(e.target.value) }),
+                                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("input", { name: "myURL", type: "url", placeholder: "www.example.com", spellCheck: "false", required: true, className: `mt-1 block w-full px-3 py-2 bg-white border-2  rounded-md text-sm shadow-sm placeholder-slate-400  
+                        ${customURL === "" ? "border-opacity-0" : " border-opacity-50 border-slate-300 invalid:border-red-600 invalid:border-2 invalid:text-red-800"}`, value: customURL, onChange: (e) => setCustomURL(e.target.value) })),
+                            react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex flex-row justify-center" },
+                                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", { type: "submit", className: "mt-4 p-2 border-2 border-black border-opacity-50 rounded-md font-semibold bg-gray-400 hover:bg-gray-600 hover:text-white" }, "Add Custom Shortcut")),
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("hr", { className: "h-px my-4 bg-gray-900 border-0 " }),
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("p", { className: "flex justify-center text-lg font-semibold select-none" }, "Popular Websites"),
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "grid grid-cols-3 overflow-y-scroll overscroll-none h-30" },
@@ -192,7 +217,7 @@ const Menu = () => {
                                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement(_popweb__WEBPACK_IMPORTED_MODULE_2__["default"], { title: "Gmail", url: "mail.google.com/mail/u/0/", imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/2560px-Gmail_icon_%282020%29.svg.png", selectedOptions: selectedOptions, handleOptionClick: handleOptionClick })),
                             react__WEBPACK_IMPORTED_MODULE_0___default().createElement("div", { className: "flex justify-end mt-2" },
                                 react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", { className: "text-md font-semibold border border-black p-1 rounded-md mr-2 bg-red-600 bg-opacity-50 hover:bg-red-800 hover:text-white", onClick: handleMenuClick }, "Cancel"),
-                                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", { className: "text-md font-semibold border border-black p-1 rounded-md bg-green-600 bg-opacity-50 hover:bg-green-800 hover:text-white", type: "submit" }, "Save"))))))))));
+                                react__WEBPACK_IMPORTED_MODULE_0___default().createElement("button", { className: "text-md font-semibold border border-black p-1 rounded-md bg-green-600 bg-opacity-50 hover:bg-green-800 hover:text-white", onClick: handleMultiSubmit }, "Save"))))))))));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Menu);
 

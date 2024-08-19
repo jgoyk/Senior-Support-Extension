@@ -10,8 +10,6 @@ module.exports = {
     devtool: 'cheap-module-source-map',
     entry: {
         popup: path.resolve('./src/popup/popup.tsx'), 
-        options: path.resolve('./src/options/options.tsx'),
-        background: path.resolve('./src/background/background.ts'),
         newTab: path.resolve('./src/tabs/index.tsx'),
     },
     module: {
@@ -51,7 +49,6 @@ module.exports = {
         }),
         ... getHtmlPlugins([
             'popup',
-            'options',
             'newTab'
         ])
     ],
